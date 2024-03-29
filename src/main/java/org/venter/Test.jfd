@@ -1,0 +1,111 @@
+JFDML JFormDesigner: "8.2.1.0.348" Java: "17.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 500, 400 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 13
+					"$rowCount": 5
+					"hGap": 9
+					"vGap": 9
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "排名数据"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "rankFile"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 2
+						"row": 1
+						"colSpan": 6
+						"minimumSize": new java.awt.Dimension( 200, 0 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "rankFileBtn"
+						"text": "选择文件"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "choseFile", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 8
+						"row": 1
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "股票申请表"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 2
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "applyFile"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 2
+						"row": 2
+						"colSpan": 6
+						"minimumSize": new java.awt.Dimension( 200, 0 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "applyFileBtn"
+						"text": "选择文件"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "choseFile", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 8
+						"row": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "股票到劵"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 3
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "stockPool"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 2
+						"row": 3
+						"colSpan": 6
+						"minimumSize": new java.awt.Dimension( 200, 10 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "stockPoolBtn"
+						"text": "选择文件夹"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "choseFile", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 8
+						"row": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "parseFileBtn"
+						"text": "开始处理"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "confirm", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 2
+						"row": 4
+						"colSpan": 3
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 6 )
+			"size": new java.awt.Dimension( 860, 530 )
+		} )
+		add( new FormComponent( "javax.swing.JFileChooser" ) {
+			name: "fileChooser1"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 186, 450 )
+			"size": new java.awt.Dimension( 501, 340 )
+		} )
+	}
+}
+
