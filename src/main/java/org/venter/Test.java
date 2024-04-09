@@ -132,10 +132,10 @@ public class Test extends JFrame {
             for (File file : files) {
                 List<StockPoolFileDTO> stockPoolFileDTOListTemp = new ArrayList<>();
                 String fileName = file.getName();
-                try (ExcelReader excelReader = EasyExcel.read(stockPoolFile).build()) {
+                try (ExcelReader excelReader = EasyExcel.read(file).build()) {
                     ReadSheet readSheet = EasyExcel.readSheet(0)
                             .head(StockPoolFileDTO.class)
-                            .registerReadListener(new PageReadListener<StockPoolFileDTO>(stockPoolFileDTOList::addAll))
+                            .registerReadListener(new PageReadListener<StockPoolFileDTO>(stockPoolFileDTOListTemp::addAll))
                             .build();
                     excelReader.read(readSheet);
                 } catch (Exception e) {
@@ -166,19 +166,11 @@ public class Test extends JFrame {
             stockMap = stockPoolFileDTOList.stream().peek(e -> e.setChannel(channel)).collect(Collectors.toMap(e->e.getChannel() + e.getStockNo(), v->v));
         }
         Map<String, RankFileDTO> rankMap = rankFileDTOList.stream().collect(Collectors.toMap(k -> k.getChannel().trim() + k.getOperatorCode().trim(), v -> v, (m1, m2) -> m1));
+        Map<String,String> operatorMap = rankFileDTOList.stream().collect(Collectors.toMap(k -> k.getOperatorCode().trim(), RankFileDTO::getOperator, (m1, m2) -> m1));
         List<Result> results = new ArrayList<>();
         for (ApplyFileDTO applyFileDTO : applyFileDTOList) {
             RankFileDTO rankFileDTO = rankMap.get(applyFileDTO.getChannel().trim() + applyFileDTO.getOperatorCode().trim());
-            Result result = new Result();
-            result.setOperator(rankFileDTO.getOperator());
-            result.setRank(rankFileDTO.getRank());
-            result.setOperatorCode(rankFileDTO.getOperatorCode());
-            result.setChannel(rankFileDTO.getChannel());
-            result.setStockNo(applyFileDTO.getStockNo());
-            result.setStockName(applyFileDTO.getStockName());
-            result.setApplyQty(applyFileDTO.getApplyQty());
-            result.setStockPrice(applyFileDTO.getStockPrice());
-            result.setStockRate(applyFileDTO.getStockRate());
+            Result result = getResult(applyFileDTO,rankFileDTO,operatorMap);
             results.add(result);
         }
 
@@ -223,6 +215,35 @@ public class Test extends JFrame {
             excelWriter.write(results, writeSheet);
         }
 
+    }
+
+    private Result getResult(ApplyFileDTO applyFileDTO, RankFileDTO rankFileDTO,Map<String,String> operatorMap) {
+        Result result = new Result();
+        if(Objects.isNull(rankFileDTO)) {
+            result.setRank(999);
+            String operator = operatorMap.get(applyFileDTO.getOperatorCode());
+            if(StringUtils.isNotBlank(operator)){
+                result.setOperator(operator);
+            }
+            result.setOperatorCode(applyFileDTO.getOperatorCode());
+            result.setChannel(applyFileDTO.getChannel());
+            result.setStockNo(applyFileDTO.getStockNo());
+            result.setStockName(applyFileDTO.getStockName());
+            result.setApplyQty(applyFileDTO.getApplyQty());
+            result.setStockPrice(applyFileDTO.getStockPrice());
+            result.setStockRate(applyFileDTO.getStockRate());
+        }else{
+            result.setOperator(rankFileDTO.getOperator());
+            result.setRank(rankFileDTO.getRank());
+            result.setOperatorCode(rankFileDTO.getOperatorCode());
+            result.setChannel(rankFileDTO.getChannel());
+            result.setStockNo(applyFileDTO.getStockNo());
+            result.setStockName(applyFileDTO.getStockName());
+            result.setApplyQty(applyFileDTO.getApplyQty());
+            result.setStockPrice(applyFileDTO.getStockPrice());
+            result.setStockRate(applyFileDTO.getStockRate());
+        }
+        return result;
     }
 
     private void initComponents() {
