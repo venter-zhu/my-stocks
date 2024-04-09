@@ -4,38 +4,44 @@
 
 package org.venter;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.lang.hash.KetamaHash;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.intellij.uiDesigner.core.*;
-import org.apache.poi.ss.formula.functions.T;
-import org.jdesktop.beansbinding.*;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author venter.zhu
  */
 public class Test extends JFrame {
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel label1;
+    private JTextField rankFile;
+    private JButton rankFileBtn;
+    private JLabel label2;
+    private JTextField applyFile;
+    private JButton applyFileBtn;
+    private JLabel label3;
+    private JTextField stockPool;
+    private JButton stockPoolBtn;
+    private JButton parseFileBtn;
+    private JFileChooser fileChooser1;
     public Test() {
         initComponents();
     }
@@ -44,7 +50,7 @@ public class Test extends JFrame {
         // TODO add your code here
         this.fileChooser1 = new JFileChooser();
         JButton button = (JButton) e.getSource();
-        if(this.stockPoolBtn == button) {
+        if (this.stockPoolBtn == button) {
             this.fileChooser1.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         } else {
             this.fileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -60,12 +66,12 @@ public class Test extends JFrame {
             });
         }
         int returnValue = this.fileChooser1.showOpenDialog(null);
-        if(returnValue == JFileChooser.APPROVE_OPTION) {
-            if(button == this.rankFileBtn) {
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            if (button == this.rankFileBtn) {
                 this.rankFile.setText(this.fileChooser1.getSelectedFile().getAbsolutePath());
-            }else if (button == this.applyFileBtn){
+            } else if (button == this.applyFileBtn) {
                 this.applyFile.setText(this.fileChooser1.getSelectedFile().getAbsolutePath());
-            }else if (button == this.stockPoolBtn){
+            } else if (button == this.stockPoolBtn) {
                 this.stockPool.setText(this.fileChooser1.getSelectedFile().getAbsolutePath());
             }
         }
@@ -74,30 +80,30 @@ public class Test extends JFrame {
     private void confirm(ActionEvent e) {
         // TODO add your code here
         System.out.println(this.applyFile.getText());
-        if(StringUtils.isBlank(this.applyFile.getText())){
+        if (StringUtils.isBlank(this.applyFile.getText())) {
             JOptionPane.showMessageDialog(null, "请选择交易员股票申请表");
         }
         System.out.println(this.stockPool.getText());
-        if(StringUtils.isBlank(this.stockPool.getText())){
+        if (StringUtils.isBlank(this.stockPool.getText())) {
             JOptionPane.showMessageDialog(null, "请选择劵池所在文件夹");
         }
         System.out.println(this.rankFile.getText());
-        if(StringUtils.isBlank(this.rankFile.getText())){
+        if (StringUtils.isBlank(this.rankFile.getText())) {
             JOptionPane.showMessageDialog(null, "请选择交易员股票申请排名表！");
         }
         JButton button = (JButton) e.getSource();
         button.setText("处理中...");
         button.setEnabled(false);
         try {
-            this.parseFile(this.rankFile.getText(),this.applyFile.getText(),this.stockPool.getText());
-        }catch (Exception ignore){
+            this.parseFile(this.rankFile.getText(), this.applyFile.getText(), this.stockPool.getText());
+        } catch (Exception ignore) {
             ignore.printStackTrace();
         }
         button.setText("开始处理");
         button.setEnabled(true);
     }
 
-    public void parseFile(String rankFileStr,String applyFileStr,String stockPoolDirStr) {
+    public void parseFile(String rankFileStr, String applyFileStr, String stockPoolDirStr) {
         File rankFile = new File(rankFileStr);
         List<RankFileDTO> rankFileDTOList = new ArrayList<>();
         try (ExcelReader excelReader = EasyExcel.read(rankFile).build()) {
@@ -106,7 +112,7 @@ public class Test extends JFrame {
                     .registerReadListener(new PageReadListener<RankFileDTO>(rankFileDTOList::addAll))
                     .build();
             excelReader.read(readSheet);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "出现错误！");
             return;
@@ -119,14 +125,14 @@ public class Test extends JFrame {
                     .registerReadListener(new PageReadListener<ApplyFileDTO>(applyFileDTOList::addAll))
                     .build();
             excelReader.read(readSheet);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "出现错误！");
             return;
         }
         File stockPoolFile = new File(stockPoolDirStr);
         Map<String, StockPoolFileDTO> stockMap;
-        if(stockPoolFile.isDirectory()){
+        if (stockPoolFile.isDirectory()) {
             List<File> files = FileUtil.loopFiles(stockPoolFile.getAbsolutePath());
             List<StockPoolFileDTO> stockPoolFileDTOList = new ArrayList<>();
             for (File file : files) {
@@ -144,11 +150,11 @@ public class Test extends JFrame {
                     return;
                 }
                 String channel = fileName.split("\\.")[0].trim();
-                stockPoolFileDTOListTemp.forEach(e->e.setChannel(channel));
+                stockPoolFileDTOListTemp.forEach(e -> e.setChannel(channel));
                 stockPoolFileDTOList.addAll(stockPoolFileDTOListTemp);
             }
-            stockMap = stockPoolFileDTOList.stream().collect(Collectors.toMap(e->e.getChannel() + e.getStockNo(), v->v));
-        }else {
+            stockMap = stockPoolFileDTOList.stream().collect(Collectors.toMap(e -> e.getChannel() + e.getStockNo(), v -> v));
+        } else {
             String fileName = stockPoolFile.getName();
             List<StockPoolFileDTO> stockPoolFileDTOList = new ArrayList<>();
             try (ExcelReader excelReader = EasyExcel.read(stockPoolFile).build()) {
@@ -163,39 +169,43 @@ public class Test extends JFrame {
                 return;
             }
             String channel = fileName.split("\\.")[0].trim();
-            stockMap = stockPoolFileDTOList.stream().peek(e -> e.setChannel(channel)).collect(Collectors.toMap(e->e.getChannel() + e.getStockNo(), v->v));
+            stockMap = stockPoolFileDTOList.stream().peek(e -> e.setChannel(channel)).collect(Collectors.toMap(e -> e.getChannel() + e.getStockNo(), v -> v));
         }
         Map<String, RankFileDTO> rankMap = rankFileDTOList.stream().collect(Collectors.toMap(k -> k.getChannel().trim() + k.getOperatorCode().trim(), v -> v, (m1, m2) -> m1));
-        Map<String,String> operatorMap = rankFileDTOList.stream().collect(Collectors.toMap(k -> k.getOperatorCode().trim(), RankFileDTO::getOperator, (m1, m2) -> m1));
+        Map<String, String> operatorMap = rankFileDTOList.stream().collect(Collectors.toMap(k -> k.getOperatorCode().trim(), RankFileDTO::getOperator, (m1, m2) -> m1));
         List<Result> results = new ArrayList<>();
         for (ApplyFileDTO applyFileDTO : applyFileDTOList) {
             RankFileDTO rankFileDTO = rankMap.get(applyFileDTO.getChannel().trim() + applyFileDTO.getOperatorCode().trim());
-            Result result = getResult(applyFileDTO,rankFileDTO,operatorMap);
+            Result result = getResult(applyFileDTO, rankFileDTO, operatorMap);
             results.add(result);
         }
 
 //        Map<String, List<RankFileDTO>> rank = rankFileDTOList.stream().collect(Collectors.groupingBy(RankFileDTO::getChannel));
-        Map<String, List<Result>> resultMap = results.stream().peek(e->{if(Objects.isNull(e.getRank())){e.setRank(999);}}).collect(Collectors.groupingBy(e->e.getChannel() + e.getStockNo()));
+        Map<String, List<Result>> resultMap = results.stream().peek(e -> {
+            if (Objects.isNull(e.getRank())) {
+                e.setRank(999);
+            }
+        }).collect(Collectors.groupingBy(e -> e.getChannel() + e.getStockNo()));
 
         for (Map.Entry<String, List<Result>> stringListEntry : resultMap.entrySet()) {
             String key = stringListEntry.getKey();
             List<Result> value = stringListEntry.getValue();
             StockPoolFileDTO stockPoolFileDTO = stockMap.get(key);
-            if(Objects.isNull(stockPoolFileDTO)){
+            if (Objects.isNull(stockPoolFileDTO)) {
                 continue;
             }
             Integer stockQty = stockPoolFileDTO.getQty();
             value.sort(Comparator.comparing(Result::getRank));
             for (Result result : value) {
                 result.setStockQty(stockPoolFileDTO.getQty());
-                if(stockQty == 0){
+                if (stockQty == 0) {
                     result.setQty(0);
                     continue;
                 }
-                if(stockQty < result.getApplyQty()){
+                if (stockQty < result.getApplyQty()) {
                     result.setQty(stockQty);
                     stockQty = 0;
-                }else {
+                } else {
                     result.setQty(result.getApplyQty());
                     stockQty = stockQty - result.getApplyQty();
                 }
@@ -209,7 +219,7 @@ public class Test extends JFrame {
             int j = ketamaHash.hash32(o2.getStockNo() + o2.getChannel()) + o2.getRank();
             return Integer.compare(i, j);
         });
-        String exportFile = (applyFile.isDirectory()?applyFile.getAbsolutePath():applyFile.getParent()) + File.separator +  "股票分配结果" + System.currentTimeMillis()+ ".xlsx";
+        String exportFile = (applyFile.isDirectory() ? applyFile.getAbsolutePath() : applyFile.getParent()) + File.separator + "股票分配结果" + System.currentTimeMillis() + ".xlsx";
         try (ExcelWriter excelWriter = EasyExcel.write(exportFile).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(0, "数据").head(Result.class).build();
             excelWriter.write(results, writeSheet);
@@ -217,12 +227,12 @@ public class Test extends JFrame {
 
     }
 
-    private Result getResult(ApplyFileDTO applyFileDTO, RankFileDTO rankFileDTO,Map<String,String> operatorMap) {
+    private Result getResult(ApplyFileDTO applyFileDTO, RankFileDTO rankFileDTO, Map<String, String> operatorMap) {
         Result result = new Result();
-        if(Objects.isNull(rankFileDTO)) {
+        if (Objects.isNull(rankFileDTO)) {
             result.setRank(999);
             String operator = operatorMap.get(applyFileDTO.getOperatorCode());
-            if(StringUtils.isNotBlank(operator)){
+            if (StringUtils.isNotBlank(operator)) {
                 result.setOperator(operator);
             }
             result.setOperatorCode(applyFileDTO.getOperatorCode());
@@ -232,7 +242,7 @@ public class Test extends JFrame {
             result.setApplyQty(applyFileDTO.getApplyQty());
             result.setStockPrice(applyFileDTO.getStockPrice());
             result.setStockRate(applyFileDTO.getStockRate());
-        }else{
+        } else {
             result.setOperator(rankFileDTO.getOperator());
             result.setRank(rankFileDTO.getRank());
             result.setOperatorCode(rankFileDTO.getOperatorCode());
@@ -357,20 +367,5 @@ public class Test extends JFrame {
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
-
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label1;
-    private JTextField rankFile;
-    private JButton rankFileBtn;
-    private JLabel label2;
-    private JTextField applyFile;
-    private JButton applyFileBtn;
-    private JLabel label3;
-    private JTextField stockPool;
-    private JButton stockPoolBtn;
-    private JButton parseFileBtn;
-    private JFileChooser fileChooser1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

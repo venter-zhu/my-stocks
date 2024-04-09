@@ -15,6 +15,5 @@ public class StockPoolFileDTO {
     String stockName;
     @ExcelProperty(value = "Qty")
     Integer qty;
-
     String channel;
 }
