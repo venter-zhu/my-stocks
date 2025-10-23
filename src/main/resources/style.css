@@ -1,0 +1,39 @@
+.root {
+    -fx-font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    -fx-font-size: 13px;
+}
+
+.input-label {
+    -fx-font-weight: bold;
+    -fx-pref-width: 90px;
+}
+
+.file-path-field {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #c0c0c0;
+    -fx-background-color: white;
+    -fx-padding: 5 8 5 8;
+}
+
+.button {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: #4A90E2;
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #357ABD;
+}
+
+.process-button {
+    -fx-background-color: #34C759;
+    -fx-font-size: 14px;
+}
+
+.process-button:hover {
+    -fx-background-color: #2DB64A;
+}
